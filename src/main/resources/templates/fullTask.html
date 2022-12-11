@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <div th:insert="~{inclusions :: bootstrap}"></div>
+
+    <title>Работа мечты</title>
+</head>
+<body>
+<div class="container">
+    <div class="row pt-3">
+        <div class="card" style="width: 100%">
+            <div class="card-header">
+                Новая задача.
+            </div>
+            <div th:insert="~{editTaskPart :: edit}"></div>
+        </div>
+        <a class="btn btn-dark" th:href="@{|/editTask/${task.id}|}" role="button">Редактировать</a>
+        <a class="btn btn-dark" th:href="@{|/deleteTask/${task.id}|}" role="button">Удалить</a>
+        <a class="btn btn-dark" th:href="@{|/completeTask/${task.id}|}" role="button">Выполнить</a>
+    </div>
+</div>
+</body>
+</html>

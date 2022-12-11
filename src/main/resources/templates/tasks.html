@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <div th:insert="~{inclusions :: bootstrap}"></div>
+
+    <title>TODO</title>
+</head>
+<body>
+<div class="container">
+    <div class="row"><div class="row">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Имя</th>
+                <th scope="col">Создано</th>
+                <th scope="col">Выполнено</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="task: ${tasks}">
+                <td th:text="${task.id}"/>
+                <td>
+                    <a th:href="@{|/fullTask/${task.id}|}">
+                        <i class="fa fa-edit"></i>
+                    </a>
+                    <span th:text="${task.name}"></span>
+                </td>
+                <td th:text="${#temporals.format(task.created,'hh:mm:ss dd-MM-yyyy')}"/>
+                <td>
+                    <span th:if="${task.done}">
+                        <i class="fa fa-check-square-o"></i>
+                    </span>
+                    <span th:if="${!task.done}">
+                        <i class="fa fa-square-o"></i>
+                    </span>
+                </td>
+                </tr>
+            </tbody>
+        </table>
+        <a class="btn btn-dark" th:href="@{/tasks}" role="button">Все</a>
+        <a class="btn btn-dark" th:href="@{/filter?done=true}" role="button">Выполненные</a>
+        <a class="btn btn-dark" th:href="@{/filter?done=false}" role="button">Невыполненные</a>
+        <a class="btn btn-dark" th:href="@{/addTask}" role="button">Добавить задачу</a>
+    </div>
+</div>
+</body>
+</html>
