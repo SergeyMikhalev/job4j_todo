@@ -8,6 +8,7 @@ import ru.job4j.todo.service.TaskService;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/tasks")
@@ -22,7 +23,6 @@ public class TaskController {
     @GetMapping({"/", ""})
     public String tasks(Model model) {
         List<Task> tasks = taskService.findAll();
-        System.out.println(tasks);
         model.addAttribute("tasks", tasks);
         return "tasks";
     }
@@ -30,7 +30,6 @@ public class TaskController {
     @GetMapping("/filter")
     public String filtered(Model model, @RequestParam(name = "done") boolean done) {
         List<Task> tasks = taskService.findByDone(done);
-        System.out.println(tasks);
         model.addAttribute("tasks", tasks);
         return "tasks";
     }
@@ -55,35 +54,47 @@ public class TaskController {
 
     @GetMapping("/full/{taskId}")
     public String fullTask(@PathVariable(name = "taskId") int taskId, Model model) {
-        Task task = taskService.findById(taskId).get();
+        Optional<Task> optionalTask = taskService.findById(taskId);
+        if (optionalTask.isEmpty()) {
+            return "redirect:/error";
+        }
         model.addAttribute("modificationDisabled", true);
-        model.addAttribute("task", task);
+        model.addAttribute("task", optionalTask.get());
         return "fullTask";
     }
 
     @GetMapping("/delete/{taskId}")
     public String deleteTask(@PathVariable(name = "taskId") int taskId) {
-        taskService.deleteById(taskId);
+        if (!taskService.deleteById(taskId)) {
+            return "redirect:/error";
+        }
         return "redirect:/tasks";
     }
 
     @GetMapping("/complete/{taskId}")
     public String completeTask(@PathVariable(name = "taskId") int taskId) {
-        taskService.completeTask(taskId);
+        if (!taskService.completeTask(taskId)) {
+            return "redirect:/error";
+        }
         return "redirect:/tasks";
     }
 
     @GetMapping("/edit/{taskId}")
     public String editTaskForm(@PathVariable(name = "taskId") int taskId, Model model) {
-        Task task = taskService.findById(taskId).get();
-        model.addAttribute("task", task);
+        Optional<Task> optionalTask = taskService.findById(taskId);
+        if (optionalTask.isEmpty()) {
+            return "redirect:/error";
+        }
+        model.addAttribute("task", optionalTask.get());
         model.addAttribute("modificationDisabled", false);
         return "editTask";
     }
 
     @PostMapping("/edit")
     public String editTask(@ModelAttribute Task task) {
-        taskService.update(task);
+        if (!taskService.update(task)) {
+            return "redirect:/error";
+        }
         return "redirect:/tasks";
     }
 }
