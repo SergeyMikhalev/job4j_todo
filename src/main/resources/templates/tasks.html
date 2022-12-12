@@ -26,7 +26,7 @@
             <tr th:each="task: ${tasks}">
                 <td th:text="${task.id}"/>
                 <td>
-                    <a th:href="@{|/fullTask/${task.id}|}">
+                    <a th:href="@{|/tasks/full/${task.id}|}">
                         <i class="fa fa-edit"></i>
                     </a>
                     <span th:text="${task.name}"></span>
@@ -44,9 +44,9 @@
             </tbody>
         </table>
         <a class="btn btn-dark" th:href="@{/tasks}" role="button">Все</a>
-        <a class="btn btn-dark" th:href="@{/filter?done=true}" role="button">Выполненные</a>
-        <a class="btn btn-dark" th:href="@{/filter?done=false}" role="button">Невыполненные</a>
-        <a class="btn btn-dark" th:href="@{/addTask}" role="button">Добавить задачу</a>
+        <a class="btn btn-dark" th:href="@{/tasks/filter?done=true}" role="button">Выполненные</a>
+        <a class="btn btn-dark" th:href="@{/tasks/filter?done=false}" role="button">Невыполненные</a>
+        <a class="btn btn-dark" th:href="@{/tasks/add}" role="button">Добавить задачу</a>
     </div>
 </div>
 </body>

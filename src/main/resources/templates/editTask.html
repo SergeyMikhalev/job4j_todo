@@ -18,7 +18,7 @@
                 Новая задача.
             </div>
             <div class="card-body">
-                <form th:action="@{/tasks/add}" method="POST" th:object="${task}">
+                <form th:action="@{/tasks/edit}" method="POST" th:object="${task}">
                     <input type="hidden" name="id" th:field="*{id}"/>
                     <input type="hidden" name="created" th:field="*{created}"/>
                     <div class="form-group">

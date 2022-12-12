@@ -17,11 +17,32 @@
             <div class="card-header">
                 Новая задача.
             </div>
-            <div th:insert="~{editTaskPart :: edit}"></div>
+            <div class="card-body">
+                <form th:action="@{/tasks/add}" method="POST" th:object="${task}">
+                    <input type="hidden" name="id" th:field="*{id}"/>
+                    <input type="hidden" name="created" th:field="*{created}"/>
+                    <div class="form-group">
+                        <label for="name">Название задачи</label>
+                        <input type="text" class="form-control" name="name" id="name"
+                               th:field="*{name}" th:disabled="${modificationDisabled}">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Описание задачи</label>
+                        <input type="text" class="form-control" name="description" id="description"
+                               th:field="*{description}" th:disabled="${modificationDisabled}">
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" name="done" class="form-check-input" id="done"
+                               th:field="*{done}">
+                        <label class="form-check-label" for="done">Выполнено</label>
+                    </div>
+                    <button type="submit" class="btn btn-dark" th:disabled="${modificationDisabled}" >Сохранить</button>
+                </form>
+            </div>
         </div>
-        <a class="btn btn-dark" th:href="@{|/editTask/${task.id}|}" role="button">Редактировать</a>
-        <a class="btn btn-dark" th:href="@{|/deleteTask/${task.id}|}" role="button">Удалить</a>
-        <a class="btn btn-dark" th:href="@{|/completeTask/${task.id}|}" role="button">Выполнить</a>
+        <a class="btn btn-dark" th:href="@{|/tasks/edit/${task.id}|}" role="button">Редактировать</a>
+        <a class="btn btn-dark" th:href="@{|/tasks/delete/${task.id}|}" role="button">Удалить</a>
+        <a class="btn btn-dark" th:href="@{|/tasks/complete/${task.id}|}" role="button">Выполнить</a>
     </div>
 </div>
 </body>

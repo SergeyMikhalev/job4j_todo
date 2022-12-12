@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
+@RequestMapping("/tasks")
 public class TaskController {
 
     private final TaskService taskService;
@@ -18,12 +19,7 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    @GetMapping({"/", "/index"})
-    public String index() {
-        return "redirect:/tasks";
-    }
-
-    @GetMapping("/tasks")
+    @GetMapping({"/", ""})
     public String tasks(Model model) {
         List<Task> tasks = taskService.findAll();
         System.out.println(tasks);
@@ -39,7 +35,7 @@ public class TaskController {
         return "tasks";
     }
 
-    @GetMapping("/addTask")
+    @GetMapping("/add")
     public String addTaskForm(Model model) {
         Task task = new Task(1,
                 "Заполните имя",
@@ -51,13 +47,13 @@ public class TaskController {
         return "addTask";
     }
 
-    @PostMapping("/addTask")
+    @PostMapping("/add")
     public String addTask(@ModelAttribute Task task) {
         taskService.save(task);
         return "redirect:/tasks";
     }
 
-    @GetMapping("/fullTask/{taskId}")
+    @GetMapping("/full/{taskId}")
     public String fullTask(@PathVariable(name = "taskId") int taskId, Model model) {
         Task task = taskService.findById(taskId).get();
         model.addAttribute("modificationDisabled", true);
@@ -65,24 +61,29 @@ public class TaskController {
         return "fullTask";
     }
 
-    @GetMapping("/deleteTask/{taskId}")
+    @GetMapping("/delete/{taskId}")
     public String deleteTask(@PathVariable(name = "taskId") int taskId) {
         taskService.deleteById(taskId);
         return "redirect:/tasks";
     }
 
-    @GetMapping("/completeTask/{taskId}")
+    @GetMapping("/complete/{taskId}")
     public String completeTask(@PathVariable(name = "taskId") int taskId) {
         taskService.completeTask(taskId);
         return "redirect:/tasks";
     }
 
-
-    @GetMapping("/editTask/{taskId}")
-    public String editTask(@PathVariable(name = "taskId") int taskId, Model model) {
+    @GetMapping("/edit/{taskId}")
+    public String editTaskForm(@PathVariable(name = "taskId") int taskId, Model model) {
         Task task = taskService.findById(taskId).get();
         model.addAttribute("task", task);
         model.addAttribute("modificationDisabled", false);
-        return "addTask";
+        return "editTask";
+    }
+
+    @PostMapping("/edit")
+    public String editTask(@ModelAttribute Task task) {
+        taskService.update(task);
+        return "redirect:/tasks";
     }
 }
