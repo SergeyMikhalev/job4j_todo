@@ -10,6 +10,14 @@ import java.util.Optional;
 
 @Repository
 public class HibernateTaskRepository implements TaskRepository {
+
+    public static final String FIND_TASK_BY_ID = "from Task as t where t.id = :fId";
+    public static final String DELETE_TASK_BY_ID = "delete Task where id = :fId";
+    public static final String SET_TASK_DONE = "update Task as t set t.done = :fDone where t.id = :fId";
+    public static final String UPDATE_TASK = "update Task as t set t.name = :fName, t.description = :fDescription, t.created = :fCreated, t.done = :fDone where t.id = :fId";
+    public static final String FIND_DONE_TASK = "from Task as t where t.done = :fDone";
+    public static final String ALL_TASKS = "from Task";
+
     private final SessionFactory sf;
 
     public HibernateTaskRepository(SessionFactory sf) {
@@ -18,115 +26,86 @@ public class HibernateTaskRepository implements TaskRepository {
 
     @Override
     public List<Task> findAll() {
-        Session session = sf.openSession();
         List<Task> result;
-        try (session) {
-            result = session.createQuery("from Task", Task.class).list();
-        } catch (final Exception e) {
-            session.getTransaction().rollback();
-            throw e;
+        try (Session session = sf.openSession()) {
+            result = session.createQuery(ALL_TASKS, Task.class).list();
         }
         return result;
     }
 
     @Override
     public List<Task> finByDone(boolean done) {
-        Session session = sf.openSession();
         List<Task> result;
-        try (session) {
-            result = session.createQuery("from Task as t where t.done = :fDone", Task.class)
+        try (Session session = sf.openSession()) {
+            result = session.createQuery(FIND_DONE_TASK, Task.class)
                     .setParameter("fDone", done)
                     .list();
-        } catch (final Exception e) {
-            session.getTransaction().rollback();
-            throw e;
         }
         return result;
     }
 
     @Override
     public Task save(Task task) {
-        Session session = sf.openSession();
-        try (session) {
+        try (Session session = sf.openSession()) {
             session.beginTransaction();
             session.save(task);
             session.getTransaction().commit();
-        } catch (final Exception e) {
-            session.getTransaction().rollback();
-            throw e;
         }
         return task;
     }
 
     @Override
     public Optional<Task> findById(int taskId) {
-        Session session = sf.openSession();
         Optional<Task> result;
-        try (session) {
-            result = session.createQuery("from Task as t where t.id = :fId", Task.class)
+        try (Session session = sf.openSession()) {
+            result = session.createQuery(FIND_TASK_BY_ID, Task.class)
                     .setParameter("fId", taskId)
                     .uniqueResultOptional();
-        } catch (final Exception e) {
-            session.getTransaction().rollback();
-            throw e;
         }
         return result;
     }
 
     @Override
     public boolean deleteById(int taskId) {
-        Session session = sf.openSession();
         int result;
-        try (session) {
+        try (Session session = sf.openSession()) {
             session.beginTransaction();
-            result = session.createQuery("delete Task where id = :fId")
+            result = session.createQuery(DELETE_TASK_BY_ID)
                     .setParameter("fId", taskId)
                     .executeUpdate();
             session.getTransaction().commit();
-        } catch (final Exception e) {
-            session.getTransaction().rollback();
-            throw e;
         }
         return result > 0;
     }
 
     @Override
     public boolean setTaskDone(int taskId, boolean done) {
-        Session session = sf.openSession();
         int result;
-        try (session) {
+        try (Session session = sf.openSession()) {
             session.beginTransaction();
-            var query = session.createQuery("update Task as t set t.done = :fDone where t.id = :fId")
+            var query = session.createQuery(SET_TASK_DONE)
                     .setParameter("fId", taskId)
                     .setParameter("fDone", done);
             System.out.println(query.toString());
             result = query.executeUpdate();
             session.getTransaction().commit();
-        } catch (final Exception e) {
-            session.getTransaction().rollback();
-            throw e;
         }
         return result > 0;
     }
 
     @Override
     public boolean update(Task task) {
-        Session session = sf.openSession();
         int result;
-        try (session) {
+        try (Session session = sf.openSession()) {
             session.beginTransaction();
-            var query = session.createQuery("update Task as t set t.name = :fName, t.description = :fDescription, t.created = :fCreated, t.done = :fDone where t.id = :fId")
+            var query = session.createQuery(UPDATE_TASK)
                     .setParameter("fId", task.getId())
                     .setParameter("fName", task.getName())
                     .setParameter("fDescription", task.getDescription())
                     .setParameter("fCreated", task.getCreated())
                     .setParameter("fDone", task.isDone());
-            System.out.println(query.toString());
             result = query.executeUpdate();
             session.getTransaction().commit();
-        } catch (final Exception e) {
-            session.getTransaction().rollback();
-            throw e;
         }
         return result > 0;
     }
