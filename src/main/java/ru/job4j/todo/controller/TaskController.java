@@ -52,9 +52,9 @@ public class TaskController {
         return "redirect:/tasks";
     }
 
-    @GetMapping("/full/{taskId}")
-    public String fullTask(@PathVariable(name = "taskId") int taskId, Model model) {
-        Optional<Task> optionalTask = taskService.findById(taskId);
+    @GetMapping("/full/{id}")
+    public String fullTask(@PathVariable(name = "id") int id, Model model) {
+        Optional<Task> optionalTask = taskService.findById(id);
         if (optionalTask.isEmpty()) {
             System.out.println(" -- there is no such task --");
             return "redirect:/error1001";
@@ -64,25 +64,25 @@ public class TaskController {
         return "tasks/full";
     }
 
-    @GetMapping("/delete/{taskId}")
-    public String deleteTask(@PathVariable(name = "taskId") int taskId) {
-        if (!taskService.deleteById(taskId)) {
+    @GetMapping("/delete/{id}")
+    public String deleteTask(@PathVariable(name = "id") int id) {
+        if (!taskService.deleteById(id)) {
             return "redirect:/error1001";
         }
         return "redirect:/tasks";
     }
 
-    @GetMapping("/complete/{taskId}")
-    public String completeTask(@PathVariable(name = "taskId") int taskId) {
-        if (!taskService.completeTask(taskId)) {
+    @GetMapping("/complete/{id}")
+    public String completeTask(@PathVariable(name = "id") int id) {
+        if (!taskService.completeTask(id)) {
             return "redirect:/error1001";
         }
         return "redirect:/tasks";
     }
 
-    @GetMapping("/edit/{taskId}")
-    public String editTaskForm(@PathVariable(name = "taskId") int taskId, Model model) {
-        Optional<Task> optionalTask = taskService.findById(taskId);
+    @GetMapping("/edit/{id}")
+    public String editTaskForm(@PathVariable(name = "id") int id, Model model) {
+        Optional<Task> optionalTask = taskService.findById(id);
         if (optionalTask.isEmpty()) {
             return "redirect:/error1001";
         }
