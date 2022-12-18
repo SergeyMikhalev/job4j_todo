@@ -1,0 +1,43 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <div th:insert="~{fragments/inclusions :: bootstrap}"></div>
+
+
+    <title>Работа мечты!</title>
+</head>
+<body>
+<div class="container pt-3">
+    <div th:insert="~{navigation :: navigator}"></div>
+    <div class="row">
+        <div class="card" style="width: 100%">
+            <div class="card-header">
+                Авторизация
+            </div>
+            <div class="card-body">
+                <div th:if="${fail}" class="alert alert-danger" role="alert">
+                    Логин или пароль введены не верно!
+                </div>
+                <form th:action="@{/login}" method="POST">
+                    <input type="hidden" name="id" value="0"/>
+                    <div class="form-group">
+                        <label>Почта</label>
+                        <input type="text" class="form-control" name="email">
+                    </div>
+                    <div class="form-group">
+                        <label>Пароль</label>
+                        <input type="text" class="form-control" name="password">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Войти</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
