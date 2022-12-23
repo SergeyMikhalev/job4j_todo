@@ -13,7 +13,6 @@
 </head>
 <body>
 <div class="container pt-3">
-    <div th:insert="~{navigation :: navigator}"></div>
     <div class="row">
         <div class="card" style="width: 100%">
             <div class="card-header">
@@ -26,14 +25,14 @@
                 <form th:action="@{/login}" method="POST">
                     <input type="hidden" name="id" value="0"/>
                     <div class="form-group">
-                        <label>Почта</label>
-                        <input type="text" class="form-control" name="email">
+                        <label>Логин</label>
+                        <input type="text" class="form-control" name="login">
                     </div>
                     <div class="form-group">
                         <label>Пароль</label>
                         <input type="text" class="form-control" name="password">
                     </div>
-                    <button type="submit" class="btn btn-primary">Войти</button>
+                    <button type="submit" class="btn btn-dark">Войти</button>
                 </form>
             </div>
         </div>

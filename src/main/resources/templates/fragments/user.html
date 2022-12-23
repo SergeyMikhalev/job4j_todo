@@ -1,0 +1,12 @@
+<div th:fragment="control">
+
+    <a class="btn btn-dark" th:href="@{/registration}" role="button">Регистрация пользователя</a>
+    <a class="btn btn-dark" th:if="${regUser.name == 'Гость'}" th:href="@{/login}">
+        <span th:text="${regUser.name}"></span>
+        <span> | Войти</span>
+    </a>
+    <a class="btn btn-dark" th:if="${regUser.name != 'Гость'}" th:href="@{/logout}">
+        <span th:text="${regUser.name}"></span>
+        <span> | Выйти</span>
+    </a>
+</div>

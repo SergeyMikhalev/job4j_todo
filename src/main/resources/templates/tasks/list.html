@@ -13,6 +13,7 @@
 <body>
 <div class="container">
     <div class="row"><div class="row">
+        <div th:insert="~{fragments/user :: control}"></div>
         <table class="table">
             <thead>
             <tr>
@@ -47,6 +48,7 @@
         <a class="btn btn-dark" th:href="@{/tasks/filter?done=true}" role="button">Выполненные</a>
         <a class="btn btn-dark" th:href="@{/tasks/filter?done=false}" role="button">Невыполненные</a>
         <a class="btn btn-dark" th:href="@{/tasks/add}" role="button">Добавить задачу</a>
+
     </div>
 </div>
 </body>

@@ -16,6 +16,9 @@
         <div class="card" style="width: 100%">
             <div class="card-header">
                 Регистрация пользователя.
+                <div th:if="${fail}" class="alert alert-danger" role="alert">
+                    Не удалось сохранить пользователя. Вероятно введенный логин уже используется!
+                </div>
             </div>
             <div class="card-body">
                 <form th:action="@{/registration}" method="POST" th:object="${user}">
