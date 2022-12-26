@@ -41,10 +41,7 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String getLoginForm(Model model, @RequestParam(name = "fail", required = false) Boolean fail) {
-        if (null == fail) {
-            fail = false;
-        }
+    public String getLoginForm(Model model, @RequestParam(name = "fail", required = false) boolean fail) {
         model.addAttribute("fail", fail);
         return "users/login";
     }
