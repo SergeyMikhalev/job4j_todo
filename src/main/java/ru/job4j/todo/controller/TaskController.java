@@ -42,11 +42,10 @@ public class TaskController {
     @GetMapping("/add")
     public String addTaskForm(Model model, HttpSession session) {
         checkUserOrSetDefault(model, session);
-        Task task = new Task(1,
-                "Заполните имя",
-                "Заполните описание",
-                LocalDateTime.now(),
-                false);
+        Task task = new Task();
+        task.setName("Заполните поле");
+        task.setDescription("Заполните поле");
+        task.setCreated(LocalDateTime.now());
         model.addAttribute("task", task);
         model.addAttribute("modificationDisabled", false);
         return "tasks/add";

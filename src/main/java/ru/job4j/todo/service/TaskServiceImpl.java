@@ -1,5 +1,6 @@
 package ru.job4j.todo.service;
 
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.repository.TaskRepository;
@@ -17,7 +18,6 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<Task> findAll() {
-        System.out.println("Task Service Find All");
         return taskRepository.findAll();
     }
 

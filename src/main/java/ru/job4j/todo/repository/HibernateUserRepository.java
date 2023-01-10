@@ -1,43 +1,35 @@
 package ru.job4j.todo.repository;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import ru.job4j.todo.model.User;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
 public class HibernateUserRepository implements UserRepository {
 
-    private final SessionFactory sf;
+    public static final String FIND_USER_BY_LOGIN_AND_PASSWORD = "from User where login =:fLogin and password = :fPassword";
 
-    public HibernateUserRepository(SessionFactory sf) {
-        this.sf = sf;
+    private final CrudRepository crudRepository;
+
+    public HibernateUserRepository(CrudRepository crudRepository) {
+        this.crudRepository = crudRepository;
     }
 
     @Override
     public Optional<User> save(User user) {
-        Optional<User> result = Optional.empty();
-        try (Session session = sf.openSession()) {
-            session.beginTransaction();
-            session.save(user);
-            session.getTransaction().commit();
-            result = Optional.of(user);
+        try {
+            crudRepository.run(session -> session.persist(user));
         } catch (Exception e) {
+            return Optional.empty();
         }
-        return result;
+        return Optional.of(user);
     }
 
     @Override
     public Optional<User> findByLoginAndPassword(String login, String password) {
-        Optional<User> result;
-        try (Session session = sf.openSession()) {
-            result = session.createQuery("from User where login =:fLogin and password = :fPassword", User.class)
-                    .setParameter("fLogin", login)
-                    .setParameter("fPassword", password)
-                    .uniqueResultOptional();
-        }
-        return result;
+        return crudRepository.optional(FIND_USER_BY_LOGIN_AND_PASSWORD, User.class,
+                Map.of("fLogin", login, "fPassword", password));
     }
 }
