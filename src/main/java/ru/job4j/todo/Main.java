@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 public class Main {
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
+        EncodingUtils.setConsoleEncodingUTF8();
     }
 
     @Bean(destroyMethod = "close")

@@ -21,6 +21,7 @@
                 <th scope="col">Имя</th>
                 <th scope="col">Создано</th>
                 <th scope="col">Выполнено</th>
+                <th scope="col">Создатель</th>
             </tr>
             </thead>
             <tbody>
@@ -41,6 +42,7 @@
                         <i class="fa fa-square-o"></i>
                     </span>
                 </td>
+                <td th:text="${task.user.name}"/>
                 </tr>
             </tbody>
         </table>

@@ -15,7 +15,8 @@ public final class ViewUtils {
     public static void checkUserOrSetDefault(Model model, HttpSession session) {
         User user = (User) session.getAttribute("user");
         if (user == null) {
-            user = new User(0, GUEST, null, null);
+            user = new User();
+            user.setName(GUEST);
         }
         model.addAttribute("regUser", user);
     }

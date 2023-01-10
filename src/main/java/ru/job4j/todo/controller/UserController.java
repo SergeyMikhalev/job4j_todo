@@ -23,7 +23,11 @@ public class UserController {
 
     @GetMapping("/registration")
     public String getRegistrationForm(Model model) {
-        model.addAttribute("user", new User(0, "Имя", "Логин", "Пароль"));
+        User user = new User();
+        user.setName("Введите имя");
+        user.setLogin("Введите логин");
+        user.setPassword("Введите пароль");
+        model.addAttribute("user", user);
         model.addAttribute("fail", false);
         return "users/registration";
     }
