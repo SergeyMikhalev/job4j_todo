@@ -3,6 +3,8 @@ package ru.job4j.todo.repository;
 import lombok.AllArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,10 +13,12 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+
 @Repository
 @AllArgsConstructor
 public class CrudRepository {
     private final SessionFactory sf;
+    private final Logger logger = LoggerFactory.getLogger(CrudRepository.class);
 
     public void run(Consumer<Session> command) {
         tx(session -> {
@@ -87,10 +91,12 @@ public class CrudRepository {
             tx.commit();
             return rsl;
         } catch (Exception e) {
-            e.printStackTrace();
-            var tx = session.getTransaction();
-            if (tx.isActive()) {
-                tx.rollback();
+            logger.error(e.toString());
+            if (session.isOpen()) {
+                var tx = session.getTransaction();
+                if (tx.isActive()) {
+                    tx.rollback();
+                }
             }
             throw e;
         }
