@@ -11,12 +11,12 @@ import java.util.Optional;
 @Repository
 public class HibernateTaskRepository implements TaskRepository {
 
-    public static final String FIND_TASK_BY_ID = "from Task as t where t.id = :fId";
+    public static final String FIND_TASK_BY_ID = "from Task as t JOIN FETCH t.priority where t.id = :fId";
     public static final String DELETE_TASK_BY_ID = "delete Task where id = :fId";
     public static final String SET_TASK_DONE = "update Task as t set t.done = :fDone where t.id = :fId";
-    public static final String UPDATE_TASK = "update Task as t set t.name = :fName, t.description = :fDescription, t.created = :fCreated, t.done = :fDone where t.id = :fId";
-    public static final String FIND_DONE_TASK = "from Task as t where t.done = :fDone";
-    public static final String ALL_TASKS = "from Task";
+    public static final String UPDATE_TASK = "update Task as t set t.name = :fName, t.description = :fDescription, t.created = :fCreated, t.done = :fDone, t.priority=:fPriority where t.id = :fId";
+    public static final String FIND_DONE_TASK = "from Task as t JOIN FETCH t.priority where t.done = :fDone";
+    public static final String ALL_TASKS = "from Task t JOIN FETCH t.priority";
 
     private final CrudRepository crudRepository;
 
@@ -64,7 +64,8 @@ public class HibernateTaskRepository implements TaskRepository {
                 "fName", task.getName(),
                 "fDescription", task.getDescription(),
                 "fCreated", task.getCreated(),
-                "fDone", task.isDone()
+                "fDone", task.isDone(),
+                "fPriority", task.getPriority()
         );
         int result = crudRepository.update(UPDATE_TASK, args);
         return result > 0;

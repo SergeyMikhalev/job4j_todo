@@ -5,6 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.model.User;
+import ru.job4j.todo.service.PriorityService;
 import ru.job4j.todo.service.TaskService;
 
 import javax.servlet.http.HttpSession;
@@ -19,9 +20,11 @@ import static ru.job4j.todo.util.ViewUtils.checkUserOrSetDefault;
 public class TaskController {
 
     private final TaskService taskService;
+    private final PriorityService priorityService;
 
-    public TaskController(TaskService taskService) {
+    public TaskController(TaskService taskService, PriorityService priorityService) {
         this.taskService = taskService;
+        this.priorityService = priorityService;
     }
 
     @GetMapping({"/", ""})
@@ -47,6 +50,7 @@ public class TaskController {
         task.setName("Заполните поле");
         task.setDescription("Заполните поле");
         task.setCreated(LocalDateTime.now());
+        model.addAttribute("priorities", priorityService.findAll());
         model.addAttribute("task", task);
         model.addAttribute("modificationDisabled", false);
         return "tasks/add";
@@ -56,6 +60,7 @@ public class TaskController {
     public String addTask(@ModelAttribute Task task, HttpSession session) {
         User user = (User) session.getAttribute("user");
         task.setUser(user);
+        task.setPriority(priorityService.findById(task.getPriority().getId()).get());
         taskService.save(task);
         return "redirect:/tasks";
     }
@@ -68,6 +73,7 @@ public class TaskController {
             System.out.println(" -- there is no such task --");
             return "redirect:/error1001";
         }
+        model.addAttribute("priorities", priorityService.findAll());
         model.addAttribute("modificationDisabled", true);
         model.addAttribute("task", optionalTask.get());
         return "tasks/full";
@@ -97,6 +103,7 @@ public class TaskController {
         if (optionalTask.isEmpty()) {
             return "redirect:/error1001";
         }
+        model.addAttribute("priorities", priorityService.findAll());
         model.addAttribute("task", optionalTask.get());
         model.addAttribute("modificationDisabled", false);
         return "tasks/edit";
@@ -104,6 +111,7 @@ public class TaskController {
 
     @PostMapping("/edit")
     public String editTask(@ModelAttribute Task task) {
+        task.setPriority(priorityService.findById(task.getPriority().getId()).get());
         if (!taskService.update(task)) {
             return "redirect:/error1001";
         }
