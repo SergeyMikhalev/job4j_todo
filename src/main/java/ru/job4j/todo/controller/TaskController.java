@@ -3,6 +3,7 @@ package ru.job4j.todo.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.job4j.todo.model.Priority;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.model.User;
 import ru.job4j.todo.service.PriorityService;
@@ -60,7 +61,11 @@ public class TaskController {
     public String addTask(@ModelAttribute Task task, HttpSession session) {
         User user = (User) session.getAttribute("user");
         task.setUser(user);
-        task.setPriority(priorityService.findById(task.getPriority().getId()).get());
+        Optional<Priority> priority = priorityService.findById(task.getPriority().getId());
+        if (priority.isEmpty()) {
+            return "redirect:/error1001";
+        }
+        task.setPriority(priority.get());
         taskService.save(task);
         return "redirect:/tasks";
     }
@@ -70,7 +75,6 @@ public class TaskController {
         checkUserOrSetDefault(model, session);
         Optional<Task> optionalTask = taskService.findById(id);
         if (optionalTask.isEmpty()) {
-            System.out.println(" -- there is no such task --");
             return "redirect:/error1001";
         }
         model.addAttribute("priorities", priorityService.findAll());
@@ -111,8 +115,11 @@ public class TaskController {
 
     @PostMapping("/edit")
     public String editTask(@ModelAttribute Task task) {
-        task.setPriority(priorityService.findById(task.getPriority().getId()).get());
-        if (!taskService.update(task)) {
+        Optional<Priority> priority = priorityService.findById(task.getPriority().getId());
+        if (priority.isPresent()) {
+            task.setPriority(priority.get());
+        }
+        if (priority.isEmpty() || (!taskService.update(task))) {
             return "redirect:/error1001";
         }
         return "redirect:/tasks";

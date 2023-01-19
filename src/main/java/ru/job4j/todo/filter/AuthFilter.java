@@ -24,7 +24,6 @@ public class AuthFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         String uri = req.getRequestURI();
-        System.out.println(uri);
         if (uriAllowedForUnregistered(uri) || "/".equals(uri)) {
             chain.doFilter(req, res);
             return;
