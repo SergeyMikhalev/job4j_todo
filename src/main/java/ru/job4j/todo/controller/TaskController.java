@@ -3,14 +3,17 @@ package ru.job4j.todo.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.job4j.todo.model.Category;
 import ru.job4j.todo.model.Priority;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.model.User;
+import ru.job4j.todo.service.CategoryService;
 import ru.job4j.todo.service.PriorityService;
 import ru.job4j.todo.service.TaskService;
 
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,10 +25,12 @@ public class TaskController {
 
     private final TaskService taskService;
     private final PriorityService priorityService;
+    private final CategoryService categoryService;
 
-    public TaskController(TaskService taskService, PriorityService priorityService) {
+    public TaskController(TaskService taskService, PriorityService priorityService, CategoryService categoryService) {
         this.taskService = taskService;
         this.priorityService = priorityService;
+        this.categoryService = categoryService;
     }
 
     @GetMapping({"/", ""})
@@ -51,21 +56,31 @@ public class TaskController {
         task.setName("Заполните поле");
         task.setDescription("Заполните поле");
         task.setCreated(LocalDateTime.now());
-        model.addAttribute("priorities", priorityService.findAll());
-        model.addAttribute("task", task);
-        model.addAttribute("modificationDisabled", false);
+
+        fillTaskForm(model, task, false);
         return "tasks/add";
     }
 
     @PostMapping("/add")
-    public String addTask(@ModelAttribute Task task, HttpSession session) {
+    public String addTask(@ModelAttribute Task task, @RequestParam(value = "categoryIds", required = false, defaultValue = "") List<Integer> categoryIds, HttpSession session) {
+        System.out.println(task);
+        System.out.println(categoryIds);
+
         User user = (User) session.getAttribute("user");
         task.setUser(user);
+
         Optional<Priority> priority = priorityService.findById(task.getPriority().getId());
+        List<Category> trueList = new ArrayList<>();
+        categoryIds.forEach(c -> {
+            trueList.add(categoryService.findById(c).get());
+        });
+        task.setCategories(trueList);
+
         if (priority.isEmpty()) {
             return "redirect:/error1001";
         }
         task.setPriority(priority.get());
+        System.out.println(task);
         taskService.save(task);
         return "redirect:/tasks";
     }
@@ -77,9 +92,7 @@ public class TaskController {
         if (optionalTask.isEmpty()) {
             return "redirect:/error1001";
         }
-        model.addAttribute("priorities", priorityService.findAll());
-        model.addAttribute("modificationDisabled", true);
-        model.addAttribute("task", optionalTask.get());
+        fillTaskForm(model, optionalTask.get(), true);
         return "tasks/full";
     }
 
@@ -107,15 +120,21 @@ public class TaskController {
         if (optionalTask.isEmpty()) {
             return "redirect:/error1001";
         }
-        model.addAttribute("priorities", priorityService.findAll());
-        model.addAttribute("task", optionalTask.get());
-        model.addAttribute("modificationDisabled", false);
+        fillTaskForm(model, optionalTask.get(), false);
         return "tasks/edit";
     }
 
     @PostMapping("/edit")
-    public String editTask(@ModelAttribute Task task) {
+    public String editTask(@ModelAttribute Task task,
+                           @RequestParam(value = "categoryIds", required = false, defaultValue = "") List<Integer> categoryIds) {
         Optional<Priority> priority = priorityService.findById(task.getPriority().getId());
+
+        List<Category> trueList = new ArrayList<>();
+        categoryIds.forEach(c -> {
+            trueList.add(categoryService.findById(c).get());
+        });
+        task.setCategories(trueList);
+
         if (priority.isPresent()) {
             task.setPriority(priority.get());
         }
@@ -124,4 +143,12 @@ public class TaskController {
         }
         return "redirect:/tasks";
     }
+
+    private void fillTaskForm(Model model, Task task, boolean modificationDisabled) {
+        model.addAttribute("task", task);
+        model.addAttribute("priorities", priorityService.findAll());
+        model.addAttribute("allCategories", categoryService.findAll());
+        model.addAttribute("modificationDisabled", modificationDisabled);
+    }
+
 }

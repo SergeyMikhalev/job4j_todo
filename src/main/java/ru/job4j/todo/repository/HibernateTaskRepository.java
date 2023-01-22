@@ -14,7 +14,8 @@ public class HibernateTaskRepository implements TaskRepository {
     public static final String FIND_TASK_BY_ID = "from Task as t JOIN FETCH t.priority where t.id = :fId";
     public static final String DELETE_TASK_BY_ID = "delete Task where id = :fId";
     public static final String SET_TASK_DONE = "update Task as t set t.done = :fDone where t.id = :fId";
-    public static final String UPDATE_TASK = "update Task as t set t.name = :fName, t.description = :fDescription, t.created = :fCreated, t.done = :fDone, t.priority=:fPriority where t.id = :fId";
+    public static final String UPDATE_TASK =
+            "update Task as t set t.name = :fName, t.description = :fDescription, t.created = :fCreated, t.done = :fDone, t.priority=:fPriority, t.categories = :fCategories where t.id = :fId";
     public static final String FIND_DONE_TASK = "from Task as t JOIN FETCH t.priority where t.done = :fDone";
     public static final String ALL_TASKS = "from Task t JOIN FETCH t.priority";
 
@@ -59,15 +60,23 @@ public class HibernateTaskRepository implements TaskRepository {
 
     @Override
     public boolean update(Task task) {
+        try {
+            crudRepository.run(session -> session.update(task));
+        } catch (Exception e){ return false;}
+        return true;
+        /*
         Map<String, Object> args = Map.of(
                 "fId", task.getId(),
                 "fName", task.getName(),
                 "fDescription", task.getDescription(),
                 "fCreated", task.getCreated(),
                 "fDone", task.isDone(),
-                "fPriority", task.getPriority()
+                "fPriority", task.getPriority(),
+                "fCategories", task.getCategories()
         );
         int result = crudRepository.update(UPDATE_TASK, args);
         return result > 0;
+
+         */
     }
 }
