@@ -59,10 +59,4 @@ public class UserController {
         session.setAttribute("user", dbUser.get());
         return "redirect:/tasks";
     }
-
-    @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/login";
-    }
 }

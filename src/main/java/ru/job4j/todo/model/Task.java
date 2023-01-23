@@ -34,7 +34,7 @@ public class Task {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "tasks_categories",
-    joinColumns = {@JoinColumn(name ="task_id")},
-    inverseJoinColumns = {@JoinColumn(name = "category_id")})
+            joinColumns = {@JoinColumn(name = "task_id")},
+            inverseJoinColumns = {@JoinColumn(name = "category_id")})
     private List<Category> categories = new ArrayList<>();
 }

@@ -13,7 +13,8 @@
 <body>
 <div class="container">
     <div class="row">
-        <p> В ходе работы приложения произошла ошибка.</p>
+        <p> В ходе работы приложения произошла ошибка. </p>
+        <label th:text="${errorMsg}"></label>
     </div>
     <div class="row">
         <a class="btn btn-dark" th:href="@{/tasks}" role="button">Вернуться на главную</a>

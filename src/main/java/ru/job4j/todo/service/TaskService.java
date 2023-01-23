@@ -10,13 +10,13 @@ public interface TaskService {
 
     List<Task> findByDone(boolean done);
 
-    Task save(Task task);
+    Task findById(int taskId);
 
-    Optional<Task> findById(int taskId);
+    void deleteById(int taskId);
 
-    boolean deleteById(int taskId);
+    void completeTask(int taskId);
 
-    boolean completeTask(int taskId);
+    void checkAndSave(Task task, List<Integer> categoryIds);
 
-    boolean update(Task task);
+    void checkAndUpdate(Task task, List<Integer> categoryIds);
 }

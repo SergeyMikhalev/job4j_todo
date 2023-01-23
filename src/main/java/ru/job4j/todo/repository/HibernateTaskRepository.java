@@ -1,6 +1,5 @@
 package ru.job4j.todo.repository;
 
-import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 import ru.job4j.todo.model.Task;
 
@@ -62,21 +61,9 @@ public class HibernateTaskRepository implements TaskRepository {
     public boolean update(Task task) {
         try {
             crudRepository.run(session -> session.update(task));
-        } catch (Exception e){ return false;}
+        } catch (Exception e) {
+            return false;
+        }
         return true;
-        /*
-        Map<String, Object> args = Map.of(
-                "fId", task.getId(),
-                "fName", task.getName(),
-                "fDescription", task.getDescription(),
-                "fCreated", task.getCreated(),
-                "fDone", task.isDone(),
-                "fPriority", task.getPriority(),
-                "fCategories", task.getCategories()
-        );
-        int result = crudRepository.update(UPDATE_TASK, args);
-        return result > 0;
-
-         */
     }
 }
