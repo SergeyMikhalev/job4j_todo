@@ -10,10 +10,8 @@ import ru.job4j.todo.repository.CategoryRepository;
 import ru.job4j.todo.repository.PriorityRepository;
 import ru.job4j.todo.repository.TaskRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -93,15 +91,18 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private List<Category> checkCategories(List<Integer> categoryIds) {
+        Map<Integer, Category> allCategoriesMap = categoryRepository.findAll()
+                .stream()
+                .collect(Collectors.toMap(Category::getId, category -> category));
         List<Category> categories = new ArrayList<>();
         for (int id : categoryIds) {
-            Optional<Category> category = categoryRepository.findById(id);
-            if (category.isEmpty()) {
+            Category category = allCategoriesMap.get(id);
+            if (null == category) {
                 String errorMsg = "Невозможно сохранить задачу. Категории с id = " + id + "нет в БД";
                 logger.error(errorMsg);
                 throw new NoSuchElementException(errorMsg);
             }
-            categories.add(category.get());
+            categories.add(category);
         }
         return categories;
     }

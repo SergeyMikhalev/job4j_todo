@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.todo.model.Task;
+import ru.job4j.todo.model.User;
 import ru.job4j.todo.service.CategoryService;
 import ru.job4j.todo.service.PriorityService;
 import ru.job4j.todo.service.TaskService;
@@ -58,7 +59,11 @@ public class TaskController {
     }
 
     @PostMapping("/add")
-    public String addTask(@ModelAttribute Task task, @RequestParam(value = "categoryIds", required = false, defaultValue = "") List<Integer> categoryIds, HttpSession session) {
+    public String addTask(@ModelAttribute Task task,
+                          @RequestParam(value = "categoryIds", required = false, defaultValue = "") List<Integer> categoryIds,
+                          HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        task.setUser(user);
         taskService.checkAndSave(task, categoryIds);
         return "redirect:/tasks";
     }

@@ -36,6 +36,7 @@ public class HibernateTaskRepository implements TaskRepository {
 
     @Override
     public Task save(Task task) {
+        System.out.println(task);
         crudRepository.run(session -> session.persist(task));
         return task;
     }
