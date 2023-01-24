@@ -109,11 +109,11 @@ public class TaskServiceImpl implements TaskService {
     private Priority checkPriority(Task task) {
         int priorityId = task.getPriority().getId();
         Optional<Priority> priority = priorityRepository.findById(priorityId);
-        if (priority.isEmpty()) {
-            String errorMsg = "Невозможно сохранить задачу. Приоритета с id =" + priorityId + "нет в БД";
+        return priority.orElseThrow(() -> {
+            String errorMsg = "Невозможно сохранить задачу. Приоритета с id ="
+                    + priorityId + "нет в БД";
             logger.error(errorMsg);
-            throw new NoSuchElementException(errorMsg);
-        }
-        return priority.get();
+            return new NoSuchElementException(errorMsg);
+        });
     }
 }
