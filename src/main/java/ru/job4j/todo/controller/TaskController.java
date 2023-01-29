@@ -117,5 +117,4 @@ public class TaskController {
         model.addAttribute("modificationDisabled", modificationDisabled);
     }
 
-
 }

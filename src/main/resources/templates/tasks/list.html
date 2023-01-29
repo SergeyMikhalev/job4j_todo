@@ -34,7 +34,10 @@
                     </a>
                     <span th:text="${task.name}"></span>
                 </td>
-                <td th:text="${#temporals.format(task.created,'hh:mm:ss dd-MM-yyyy')}"/>
+                <td th:text="${#temporals.format(task.getCreated()
+                .atZone('GMT+0')
+                .withZoneSameInstant(regUser.getTimeZone())
+                ,'hh:mm:ss dd-MM-yyyy')}"/>
                 <td>
                     <span th:if="${task.done}">
                         <i class="fa fa-check-square-o"></i>

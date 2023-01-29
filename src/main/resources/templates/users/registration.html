@@ -38,6 +38,13 @@
                         <label for="password">Пароль</label>
                         <input type="text" class="form-control" name="password" id="password" th:field="*{password}">
                     </div>
+                    <div class="form-group">
+                        <label for="timeZone">Часовой пояс</label>
+                        <select class="form-control" id="timeZone" name="timeZone">
+                            <option th:each="timeZone : ${timeZoneList}" th:value="${timeZone.getID()}"
+                                    th:text="${timeZone.getDisplayName()+' - '+timeZone.getID() }"></option>
+                        </select>
+                    </div>
                     <button type="submit" class="btn btn-dark">Зарегистрировать</button>
                 </form>
             </div>

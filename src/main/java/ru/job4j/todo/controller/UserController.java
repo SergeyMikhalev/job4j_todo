@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.job4j.todo.model.User;
+import ru.job4j.todo.service.TimeZoneService;
 import ru.job4j.todo.service.UserService;
 
 import javax.servlet.http.HttpSession;
@@ -16,9 +17,11 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
+    private final TimeZoneService timeZoneService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, TimeZoneService timeZoneService) {
         this.userService = userService;
+        this.timeZoneService = timeZoneService;
     }
 
     @GetMapping("/registration")
@@ -29,11 +32,13 @@ public class UserController {
         user.setPassword("Введите пароль");
         model.addAttribute("user", user);
         model.addAttribute("fail", false);
+        model.addAttribute("timeZoneList", timeZoneService.getTimeZones());
         return "users/registration";
     }
 
     @PostMapping("/registration")
     public String registerUser(@ModelAttribute User user, Model model) {
+        System.out.println(user);
         String resultTemplate = "redirect:/tasks";
         Optional<User> savedUser = userService.save(user);
         if (savedUser.isEmpty()) {
@@ -57,6 +62,12 @@ public class UserController {
             return "redirect:/login?fail=true";
         }
         session.setAttribute("user", dbUser.get());
+        return "redirect:/tasks";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
         return "redirect:/tasks";
     }
 }

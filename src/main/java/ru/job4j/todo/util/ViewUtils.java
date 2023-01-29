@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 public final class ViewUtils {
 
     public static final String GUEST = "Гость";
+    private static final String DEFAULT_TIME_ZONE = "Europe/Moscow";
 
     private ViewUtils() {
     }
@@ -17,6 +18,7 @@ public final class ViewUtils {
         if (user == null) {
             user = new User();
             user.setName(GUEST);
+            user.setTimeZone(DEFAULT_TIME_ZONE);
         }
         model.addAttribute("regUser", user);
     }
