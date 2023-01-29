@@ -12,6 +12,7 @@ public class HibernateCategoryRepository implements CategoryRepository {
 
     public static final String FIND_ALL = "from Category c";
     public static final String FIND_BY_ID = "from Category c where c.id=:fId";
+    public static final String FIND_IDS_IN = "from Category c where c.id in :fIds";
 
     private final CrudRepository crudRepository;
 
@@ -30,5 +31,13 @@ public class HibernateCategoryRepository implements CategoryRepository {
                 FIND_BY_ID,
                 Category.class,
                 Map.of("fId", categoryId));
+    }
+
+    @Override
+    public List<Category> findIdsIn(List<Integer> ids) {
+        return crudRepository.query(
+                FIND_IDS_IN,
+                Category.class,
+                Map.of("fIds", ids));
     }
 }
